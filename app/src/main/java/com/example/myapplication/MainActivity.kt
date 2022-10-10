@@ -15,6 +15,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -23,7 +25,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.ui.theme.AndroidTrainingTheme
-import com.example.myapplication.ui.theme.Red200
+import com.example.myapplication.ui.theme.Brown100
+import androidx.compose.runtime.*
 
 
 class MainActivity : ComponentActivity() {
@@ -31,14 +34,26 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AndroidTrainingTheme{
-                Surface(modifier = Modifier.fillMaxSize()){
-
-            val user = User("Unmus", "Papua", 36)
-            MenampilkanPesan(user)
-                    }
-                }
+                Conversation(GenerateDataDummyUser())
             }
+        }
     }
+}
+
+fun GenerateDataDummyUser(): ArrayList<User>{
+    var users: ArrayList<User> = ArrayList()
+
+    // buat objek user
+    var user: User = User("Arfa", "Lampung Lampung Lampung Lampung Lampung Lampung Lampungg asdfadfasadfasdf  asdfadfasadfasdf ", 20)
+    users.add(user)
+
+    user = User("Fando", "Metro Metro Metro Metro Metro Metro Metro Metro Metro Metro asdfadfasadfasdf asdfadfasadfasdf  asdfadfasadfasdf ", 25)
+    users.add(user)
+
+    user = User("Ghymsa", "Merauke Merauke Merauke Merauke Merauke Merauke Merauke Merauke asdfadfasadfasdf  asdfadfasadfasdf  asdfadfasadfasdf ", 22)
+    users.add(user)
+
+    return users
 }
 data class User(
     val name: String,
@@ -47,7 +62,7 @@ data class User(
 )
 
 @Composable
-fun MenampilkanPesan(user: User) {
+fun Pesan(user: User) {
         Row(
             modifier = Modifier.padding(all = 8.dp)
         ) {
@@ -62,13 +77,19 @@ fun MenampilkanPesan(user: User) {
                     .border(1.5.dp, MaterialTheme.colors.secondary, CircleShape),
                 contentScale = ContentScale.Crop)
             Spacer(modifier = Modifier.width(8.dp))
+
+            var isExpanded by remember {mutableStateOf(false)}
+
             Column() {
-                Text(text = user.name, color = Red200)
+                Text(text = user.name, color = Brown100)
                 Spacer(modifier = Modifier.height(8.dp))
                 Surface(shape = MaterialTheme.shapes.medium, elevation = 2.dp) {
                     Text(
                         text = user.address,
                         modifier = Modifier.padding(all = 4.dp),
+
+                        maxLines = if (isExpanded) Int.MAX_VALUE else 1,
+
                         style = MaterialTheme.typography.body2
                     )
                 }
@@ -77,16 +98,16 @@ fun MenampilkanPesan(user: User) {
 }
 @Preview
 @Composable
-fun PreviewMenampilkanPesan(){
+fun PreviewPesan(){
     val user = User("Unmus", "Papua", 36)
-    MenampilkanPesan(user)
+    Pesan(user)
 }
 
 @Composable
-fun Conversation(users: List<User>) {
-    LazyRow{
+fun Conversation(users: ArrayList<User>) {
+    LazyColumn {
         items(users) { user ->
-            MenampilkanPesan(user = user)
+            Pesan(user = user)
         }
     }
 }
